@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Consulta de Patentes</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; }
+        input { padding: 10px; margin: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background-color: #ff6d5a; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #resultado { margin-top: 20px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+
+    <h2>Consultar Estado de Patente</h2>
+    <input type="text" id="patenteInput" placeholder="Ingrese dominio (Ej: ABC-123)">
+    <button onclick="consultarN8n()">Consultar</button>
+
+    <div id="resultado"></div>
+
+    <script>
+        async function consultarN8n() {
+            const patente = document.getElementById('patenteInput').value;
+            const resDiv = document.getElementById('resultado');
+            
+            resDiv.innerText = "Consultando...";
+
+            try {
+                const response = await fetch('https://visebas1.app.n8n.cloud/webhook/consulta-patente', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dominio: patente })
+                });
+
+                const data = await response.json();
+                
+                // Aquí usamos el nombre del campo que configuraste en el nodo Edit Fields
+                resDiv.innerText = data.mensaje || data.resultado || "Respuesta recibida";
+                
+            } catch (error) {
+                resDiv.innerText = "Error al conectar con el servidor.";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
