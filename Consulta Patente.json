@@ -1,0 +1,357 @@
+{
+  "name": "Consulta Patente",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/19ZkI22EJLfCwDDbDmHh3OAq-oaDETEKOCwsPV9XFVOg/edit?gid=2059025252#gid=2059025252",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.body.tipo }}",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=Dominio",
+              "lookupValue": "={{ $json.body.dominio }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8f5a5e83-591f-42fc-ab9b-69577e158cee",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4kChiDSsKEO2ousi",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5f1e5a33-65f3-4779-a22c-35206ef6abd7",
+              "leftValue": "={{ $node[\"Get row(s) in sheet\"].json.hasOwnProperty('Dominio') }}",
+              "rightValue": "SI",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "9c5e6488-6948-488a-898e-4ca513576d44",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "consulta-patente",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c12a2fed-7534-4969-9e3f-acfa66a3776f",
+      "name": "Webhook",
+      "webhookId": "f24a5bd9-b6ae-4620-93d5-39c078e6b16e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8dbd088b-21b7-4237-ba20-6a322c755ca1",
+              "name": "mensaje",
+              "value": "Tu patente ya llegó",
+              "type": "string"
+            },
+            {
+              "id": "fa032c08-418e-470d-8cf8-1a2041e742bd",
+              "name": "Llego",
+              "value": "si",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        16
+      ],
+      "id": "293d7b61-950c-41c3-a96f-063d3b137850",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2046ed99-7f84-4215-b137-2e21d98d241e",
+              "name": "mensaje",
+              "value": "\"Tu patente aún no llegó\"",
+              "type": "string"
+            },
+            {
+              "id": "12b1023a-e8b0-4479-8ae6-b7e86cf56d49",
+              "name": "llego",
+              "value": "\"no\"",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        816,
+        160
+      ],
+      "id": "31d100d6-4603-4af1-a036-7e3bac77c0cf",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1216,
+        16
+      ],
+      "id": "39686b9f-427b-447d-b4ee-0cbc4acf9c03",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5f1e5a33-65f3-4779-a22c-35206ef6abd7",
+              "leftValue": "={{ $json.Llego }}",
+              "rightValue": "SI",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        608,
+        64
+      ],
+      "id": "44e01188-ef9f-487c-a51c-2e975ae7b0d1",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ce70eb3a-c435-4014-857c-2a52393db51e",
+              "name": "mensaje",
+              "value": "\"El dominio ingresado no se encuentra en nuestra base de datos. Por favor, verifique los datos.\"",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        -176
+      ],
+      "id": "97e7dff8-58a3-4699-8b23-4d897b8950ed",
+      "name": "Dominio no encontrado"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "fdb7cae5-9a73-4619-8b8f-21081d2228e1",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Dominio no encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dominio no encontrado": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "75854c3a-b5b8-4a22-a3b5-ea8a7ef8127f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fcfc463089599a37648e01ebd8dc3158934aa4da859773000f35aaf8df02beeb"
+  },
+  "id": "2SVXZeCgry8S7lry",
+  "tags": []
+}
