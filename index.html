@@ -49,9 +49,9 @@
         
         // Como "por defecto de fabrica" son autos, usamos el mismo placeholder de auto
         if (tipo === 'auto' || tipo === 'por defecto de fabrica') {
-            dominioInput.placeholder = "123ABC o AB123AB";
+            dominioInput.placeholder = "ABC123 o AB123AB";
         } else if (tipo === 'moto') {
-            dominioInput.placeholder = "ABC123 o A123AAA";
+            dominioInput.placeholder = "123ABC o A123AAA";
         }
     }
 
@@ -67,8 +67,8 @@
         const resDiv = document.getElementById('resultado');
         
         // Máscaras de Argentina
-        const regexAuto = /^(?:\d{3}[A-Z]{3}|[A-Z]{2}\d{3}[A-Z]{2})$/; 
-        const regexMoto = /^(?:[A-Z]{3}\d{3}|[A-Z]\d{3}[A-Z]{3})$/; 
+        const regexAuto = /^(?:[A-Z]{3}\d{3}|[A-Z]{2}\d{3}[A-Z]{2})$/; 
+        const regexMoto = /^(?:\d{3}[A-Z]{3}|[A-Z]\d{3}[A-Z]{3})$/; 
 
         if(!dominio) { 
             alert("Por favor, ingrese un dominio."); 
