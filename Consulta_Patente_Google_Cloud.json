@@ -1,0 +1,356 @@
+{
+  "name": "Consulta Patente",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8dbd088b-21b7-4237-ba20-6a322c755ca1",
+              "name": "mensaje",
+              "value": "Tu patente ya llegó",
+              "type": "string"
+            },
+            {
+              "id": "fa032c08-418e-470d-8cf8-1a2041e742bd",
+              "name": "Llego",
+              "value": "si",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        340
+      ],
+      "id": "ffa6cb94-f640-4e27-a027-adc1c47a1667",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2046ed99-7f84-4215-b137-2e21d98d241e",
+              "name": "mensaje",
+              "value": "\"Tu patente aún no llegó\"",
+              "type": "string"
+            },
+            {
+              "id": "12b1023a-e8b0-4479-8ae6-b7e86cf56d49",
+              "name": "llego",
+              "value": "\"no\"",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        520
+      ],
+      "id": "cc7b3939-3123-40b3-bcba-5e9b4cc5b2f0",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ce70eb3a-c435-4014-857c-2a52393db51e",
+              "name": "mensaje",
+              "value": "\"El dominio ingresado no se encuentra en nuestra base de datos. Por favor, verifique los datos.\"",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        160
+      ],
+      "id": "2468a6da-cccd-4ddd-a45b-495c7c173340",
+      "name": "Dominio no encontrado"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/19ZkI22EJLfCwDDbDmHh3OAq-oaDETEKOCwsPV9XFVOg/edit?gid=2059025252#gid=2059025252",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.body.tipo }}",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=Dominio",
+              "lookupValue": "={{ $json.body.dominio }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4f15b378-2774-4c36-a463-459cc9131ab3",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        260
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleApi": {
+          "id": "uSQ6bNmd0MzIHzcp",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "c7406e8f-2f5b-4913-9468-37c8714b4085",
+      "name": "Respond to Webhook1",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1400,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "f749120e-e8a2-4c14-8517-62d4775fad63",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1e91289e-67d3-4d47-b1cf-fcab004dbc7f",
+              "leftValue": "={{ $json.Llego }}",
+              "rightValue": "SI",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fd66c48b-0ed5-4dde-8448-0be43ee9dc65",
+      "name": "Llego ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3bd3b439-6fb6-48b9-bf7d-2f4e9ce8655f",
+              "leftValue": "={{ $json.Dominio }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "0636389a-849e-42c7-b719-b3f9a5848c27",
+      "name": "Dominio ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "consulta-patente",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "9017f9c1-82c7-4e62-b54e-04d3128a44f6",
+      "name": "consulta-patente",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        260
+      ],
+      "webhookId": "8ec6cae3-e590-4fc6-84fb-b39aadd0865f"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Dominio ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dominio no encontrado": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Llego ?": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dominio ?": {
+      "main": [
+        [
+          {
+            "node": "Dominio no encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Llego ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "consulta-patente": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5520ec1b-d8f1-4585-afd7-26790b173f74",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "889dd79aef9d90c221c1ce0e18949b2e2fa57a0c9a7d8a5ed052b8e21f911356"
+  },
+  "id": "cbjBlqKjF2OFbRzM",
+  "tags": []
+}
