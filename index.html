@@ -95,7 +95,7 @@
         resDiv.className = "";
 
         try {
-            const response = await fetch('http://8.229.75.118:5678/webhook/consulta-patente', {
+            const response = await fetch('https://consulta-patente.duckdns.org/webhook/consulta-patente', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ dominio: dominio, tipo: tipo })
